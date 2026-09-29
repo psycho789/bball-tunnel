@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>fairline · NBA model vs Kalshi</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; line-height: 1.5; color: #111; background: #fafafa; }
+    body { max-width: 38rem; margin: 2rem auto; padding: 0 1rem; }
+    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1.25rem; }
+    .badge { margin: 1rem 0; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.95rem; }
+    .badge.meta { background: #f5f5f5; border: 1px solid #bdbdbd; color: #424242; }
+    .badge.warn { background: #fff8e1; border: 1px solid #ffcc80; color: #5d4037; }
+    .live { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
+    .live .pending { color: #666; }
+    .live span.ok { color: #2e7d32; font-weight: 600; }
+    .live span.bad { color: #c62828; font-weight: 600; }
+    .links a { display: inline-block; margin: 0.25rem 0.75rem 0.25rem 0; color: #1565c0; font-weight: 600; }
+    .links a:hover { text-decoration: underline; }
+    footer { margin-top: 2rem; font-size: 0.85rem; color: #666; }
+    code { font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>fairline</h1>
+    <p>An NBA win-probability model, charted play by play against Kalshi's live market price:
+      15,098 games from 2015-16 to 2025-26, 1,445 of them with Kalshi prices.</p>
+    <p class="links">
+      <a href="https://opera-programming-est-applicable.trycloudflare.com/games" target="_blank" rel="noopener noreferrer">Games: model vs market</a>
+      <a href="https://opera-programming-est-applicable.trycloudflare.com/research" target="_blank" rel="noopener noreferrer">Research: the models</a>
+    </p>
+    <p class="badge warn">Read-only share from a laptop: it is only up while that laptop is on. The backtest
+      profit figures on the Money page are under review (a fill-timing issue), so start with Games.</p>
+    <p class="badge meta"><strong>Deploy-time only (not live):</strong> the tunnel answered <code>/games</code>
+      with HTTP 200 at 2026-09-29T05:43:23Z UTC. Tunnel hostnames change when the tunnel restarts.</p>
+    <div class="live">
+      <h2>Live check (this browser)</h2>
+      <p class="pending" id="hint">Checking…</p>
+      <p>Status: <span id="live-web" class="pending">…</span></p>
+      <p><button type="button" id="recheck">Recheck</button></p>
+    </div>
+  </div>
+  <footer>
+    <p>This page: https://psycho789.github.io/bball-tunnel/ · current tunnel: <code>https://opera-programming-est-applicable.trycloudflare.com</code></p>
+  </footer>
+  <script>
+(function () {
+  const WEB = "https://opera-programming-est-applicable.trycloudflare.com";
+
+  function setWeb(text, ok) {
+    const el = document.getElementById("live-web");
+    el.textContent = text;
+    el.className = ok === true ? "ok" : ok === false ? "bad" : "pending";
+  }
+
+  function probeTunnel(done) {
+    const ctrl = new AbortController();
+    const t = setTimeout(function () { ctrl.abort(); }, 20000);
+    fetch(WEB + "/tunnel-probe.json?t=" + Date.now(), { method: "GET", mode: "cors", cache: "no-store", signal: ctrl.signal })
+      .then(function (r) {
+        clearTimeout(t);
+        if (!r.ok) { done(false, "HTTP " + r.status); return null; }
+        return r.json();
+      })
+      .then(function (j) {
+        if (j === null) return;
+        if (j && j.ok === true) done(true, "Reachable");
+        else done(false, "Unexpected JSON");
+      })
+      .catch(function (e) {
+        clearTimeout(t);
+        if (e && e.name === "AbortError") done(false, "Timeout (20s)");
+        else done(false, "Unreachable (laptop off, or tunnel restarted)");
+      });
+  }
+
+  function run() {
+    document.getElementById("hint").textContent = "Requesting tunnel-probe.json…";
+    setWeb("…", null);
+    probeTunnel(function (ok, msg) { setWeb(msg, ok); document.getElementById("hint").textContent = ""; });
+  }
+
+  document.getElementById("recheck").addEventListener("click", run);
+  window.addEventListener("pageshow", function (ev) { if (ev.persisted) run(); });
+  run();
+})();
+  </script>
+</body>
+</html>
