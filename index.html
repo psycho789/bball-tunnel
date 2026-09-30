@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>fairline · NBA model vs Kalshi</title>
+  <title>fairline · NBA model vs Kalshi and Polymarket</title>
   <style>
     :root { font-family: system-ui, sans-serif; line-height: 1.5; color: #111; background: #fafafa; }
     body { max-width: 38rem; margin: 2rem auto; padding: 0 1rem; }
@@ -24,14 +24,16 @@
 <body>
   <div class="card">
     <h1>fairline</h1>
-    <p>An NBA win-probability model, charted play by play against Kalshi's live market price:
-      15,098 games from 2015-16 to 2025-26, 1,445 of them with Kalshi prices.</p>
+    <p>An NBA win-probability model, charted play by play against the live prices on Kalshi and
+      Polymarket, with an honest backtest of whether trading on it would make money.</p>
     <p class="links">
       <a href="https://follow-lock-promised-creates.trycloudflare.com/games" target="_blank" rel="noopener noreferrer">Games: model vs market</a>
+      <a href="https://follow-lock-promised-creates.trycloudflare.com/" target="_blank" rel="noopener noreferrer">Money: the honest result</a>
+      <a href="https://follow-lock-promised-creates.trycloudflare.com/research/markets" target="_blank" rel="noopener noreferrer">Kalshi vs Polymarket</a>
       <a href="https://follow-lock-promised-creates.trycloudflare.com/research" target="_blank" rel="noopener noreferrer">Research: the models</a>
     </p>
-    <p class="badge warn">Read-only share from a laptop: it is only up while that laptop is on. The backtest
-      profit figures on the Money page are under review (a fill-timing issue), so start with Games.</p>
+    <p class="badge warn">Read-only share from a laptop: it is only up while that laptop is on. Pretend
+      money only: with realistic trade timing the strategy currently loses money, and the site says so.</p>
     <p class="badge meta"><strong>Deploy-time only (not live):</strong> the tunnel answered <code>/games</code>
       with HTTP 200 at 2026-09-30T02:02:38Z UTC. Tunnel hostnames change when the tunnel restarts.</p>
     <div class="live">
